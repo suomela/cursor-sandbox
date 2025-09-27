@@ -24,7 +24,7 @@ Usage
 
 The idea is that you can simply run `cursor-sandbox` instead of `cursor-agent`.
 
-The current working directory of the host computer will be read-write mounted as `/workspace`, and `cursor-agent`.
+The current working directory of the host computer will be read-write mounted as `/workspace`, and `cursor-agent` will be executed within that workspace.
 
 Your Cursor login information will be stored in the persistent Docker volume. There is nothing special to do; the first time you run `cursor-sandbox` it should ask you to log on to Cursor as usual.
 
