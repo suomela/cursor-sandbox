@@ -5,6 +5,8 @@ Docker sandbox for [Cursor CLI](https://cursor.com/cli).
 
 This should work (at least) on macOS, assuming you have Docker installed already.
 
+Use at your own risk.
+
 One-time setup
 --------------
 
