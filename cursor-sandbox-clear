@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -euo pipefail
+
+docker volume rm -f cursor-sandbox-home

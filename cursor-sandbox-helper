@@ -1,0 +1,7 @@
+#!/bin/bash
+
+exec docker run --rm -it \
+    -v "cursor-sandbox-home:/home/cursor" \
+    -v "$PWD":/workspace:rw \
+    -w /workspace \
+    "cursor-agent-sandbox"

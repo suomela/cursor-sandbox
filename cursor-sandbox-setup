@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -euo pipefail
+
+docker volume rm -f cursor-sandbox-home
+docker volume create cursor-sandbox-home
+
+docker run --rm -it \
+    -v "cursor-sandbox-home:/home/cursor" \
+    "cursor-agent-sandbox" \
+    bash -lc 'curl -LsSf https://astral.sh/uv/install.sh | sh && curl https://cursor.com/install -fsS | bash'
