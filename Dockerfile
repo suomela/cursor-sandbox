@@ -9,6 +9,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN useradd -m cursor
 USER cursor
 ENV HOME=/home/cursor \
-    PATH=/home/cursor/.local/bin:$PATH
+    PATH=/home/cursor/.local/bin:/home/cursor/.cargo/bin:$PATH
 
 WORKDIR /workspace

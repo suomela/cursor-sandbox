@@ -8,4 +8,4 @@ docker volume create cursor-sandbox-home
 docker run --rm -it \
     --mount "type=volume,source=cursor-sandbox-home,target=/home/cursor" \
     "cursor-agent-sandbox" \
-    bash -lc 'curl -LsSf https://astral.sh/uv/install.sh | sh && curl https://cursor.com/install -fsS | bash && curl -fsSL https://claude.ai/install.sh | bash'
+    bash -lc 'curl -LsSf https://astral.sh/uv/install.sh | sh && curl https://cursor.com/install -fsS | bash && curl -fsSL https://claude.ai/install.sh | bash && curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y'
