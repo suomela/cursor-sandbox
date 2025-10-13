@@ -1,7 +1,11 @@
 #!/bin/bash
 
-exec docker run --rm -it \
+set -euo pipefail
+
+docker run --rm -it \
     --mount "type=volume,source=cursor-sandbox-home,target=/home/cursor" \
     --mount "type=bind,source=.,target=/workspace" \
     -w /workspace \
     "cursor-agent-sandbox"
+
+printf '\033]0;\007'
