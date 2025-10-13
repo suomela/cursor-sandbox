@@ -1,7 +1,7 @@
-Cursor Agent Sandbox
-====================
+Cursor Agent + Claude Code Sandbox
+==================================
 
-Docker sandbox for [Cursor CLI](https://cursor.com/cli).
+Docker sandbox for [Cursor CLI](https://cursor.com/cli) and [Claude Code](https://www.claude.com/product/claude-code).
 
 This should work (at least) on macOS, assuming you have Docker installed already.
 
@@ -22,11 +22,14 @@ The second command sets up a persistent volume that will be visible as `/home/cu
 Usage
 -----
 
-The idea is that you can simply run `cursor-sandbox` instead of `cursor-agent`.
+The idea is that you can simply run:
 
-The current working directory of the host computer will be read-write mounted as `/workspace`, and `cursor-agent` will be executed within that workspace.
+- `cursor-sandbox` instead of `cursor-agent`
+- `claude-sandbox` instead of `claude`
 
-Your Cursor login information will be stored in the persistent Docker volume. There is nothing special to do; the first time you run `cursor-sandbox` it should ask you to log on to Cursor as usual.
+The current working directory of the host computer will be read-write mounted as `/workspace`, and `cursor-agent` and `claude` will be executed within that workspace.
+
+Your Cursor and Claude login information will be stored in the persistent Docker volume. There is nothing special to do; the first time you run `cursor-sandbox` it should ask you to log on to Cursor as usual, and the same applies to `claude-sandbox`.
 
 Utilities
 ---------
