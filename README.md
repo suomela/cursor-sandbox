@@ -17,7 +17,7 @@ cursor-sandbox-setup
 
 The first command creates an appropriate Docker image.
 
-The second command sets up a persistent volume that will be visible as `/home/cursor` inside the Docker container, and installs [uv](https://docs.astral.sh/uv/) and `cursor-agent` there.
+The second command sets up a persistent volume that will be visible as `/home/cursor` inside the Docker container, and installs [uv](https://docs.astral.sh/uv/), Rust, Cursor CLI and Claude Code there.
 
 Usage
 -----
