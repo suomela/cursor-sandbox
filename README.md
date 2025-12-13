@@ -15,7 +15,7 @@ One-time setup
 ./cursor-sandbox-setup
 ```
 
-The first command creates an appropriate Docker image.
+The first command creates an appropriate Docker image, with basic development tools and TeX Live.
 
 The second command sets up a persistent volume that will be visible as `/home/cursor` inside the Docker container, and installs [uv](https://docs.astral.sh/uv/), Rust, Cursor CLI and Claude Code there.
 
