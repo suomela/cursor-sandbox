@@ -3,7 +3,9 @@ FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates curl xdg-utils git build-essential cmake libclang-dev pkg-config \
+    ca-certificates curl xdg-utils git \
+    build-essential cmake libclang-dev pkg-config \
+    texlive-full \
  && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m cursor
