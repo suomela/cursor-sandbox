@@ -1,7 +1,7 @@
-Cursor Agent + Claude Code Sandbox
-==================================
+Cursor Agent + Claude Code + Codex Sandbox
+==========================================
 
-A Docker sandbox for [Cursor CLI](https://cursor.com/cli) and [Claude Code](https://www.claude.com/product/claude-code).
+A Docker sandbox for [Cursor CLI](https://cursor.com/cli), [Claude Code](https://www.claude.com/product/claude-code), and [Codex](https://openai.com/codex/).
 
 This should work (at least) on macOS, assuming you already have Docker installed.
 
@@ -26,10 +26,13 @@ The idea is that you can simply run:
 
 - `cursor-sandbox` instead of `cursor-agent`
 - `claude-sandbox` instead of `claude`
+- `codex-sandbox` instead of `codex`
 
-The current working directory of the host computer will be mounted as `/workspace` with read-write access, and `cursor-agent` and `claude` will be executed within that workspace.
+The current working directory of the host computer will be mounted as `/workspace` with read-write access, and the AI agents will be executed within that workspace.
 
 Your Cursor and Claude login information will be stored in the persistent Docker volume. There is nothing special to do; the first time you run `cursor-sandbox`, it will ask you to log in to Cursor as usual, and the same applies to `claude-sandbox`.
+
+For Codex, you will want to use their "device code authentication": run `codex-sandbox login --device-auth` and follow the instructions, and after that `codex-sandbox` should work.
 
 Utilities
 ---------

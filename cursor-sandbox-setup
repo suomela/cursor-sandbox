@@ -12,7 +12,8 @@ docker run --rm -it \
         set -e
 
         curl -LsSf https://astral.sh/uv/install.sh | sh
+        curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
         curl https://cursor.com/install -fsS | bash
         curl -fsSL https://claude.ai/install.sh | bash
-        curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+        npm install -g --prefix "$HOME/.local" @openai/codex
     '
