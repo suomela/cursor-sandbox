@@ -5,6 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates curl xdg-utils git \
     build-essential cmake libclang-dev pkg-config \
+    libfontconfig1-dev \
     texlive-full \
  && rm -rf /var/lib/apt/lists/*
 
