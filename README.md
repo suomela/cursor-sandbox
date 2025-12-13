@@ -11,8 +11,8 @@ One-time setup
 --------------
 
 ```bash
-cursor-sandbox-build-image
-cursor-sandbox-setup
+./cursor-sandbox-build-image
+./cursor-sandbox-setup
 ```
 
 The first command creates an appropriate Docker image.
