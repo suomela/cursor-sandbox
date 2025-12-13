@@ -1,5 +1,5 @@
-Cursor Agent + Claude Code + Codex Sandbox
-==========================================
+Cursor CLI + Claude Code + Codex Sandbox
+========================================
 
 A Docker sandbox for [Cursor CLI](https://cursor.com/cli), [Claude Code](https://www.claude.com/product/claude-code), and [Codex](https://openai.com/codex/).
 
