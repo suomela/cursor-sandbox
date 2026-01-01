@@ -18,15 +18,15 @@ You should have access to the usual development tools. These Ubuntu packages hav
 
 **LaTeX:** You can run LaTeX compilations as usual, e.g. `latexmk -pdf foo.tex` and `pdflatex` should work.
 
-**Rust:** The usual Rust environment has been installed with `rustup`. You can build with with `cargo` as usual. Feel free to add any external dependencies with `cargo add` as needed.
+**Rust:** The usual Rust environment has been installed with `rustup`. You can build with `cargo` as usual. Feel free to add any external dependencies with `cargo add` as needed.
 
 **Python:** There is `python3` and `uv` available. Please use `uv` for running Python experiments, especially if you need some external packages. Feel free to use `uv` to access whatever Python packages you might need, including `numpy`, `matplotlib`, `sympy`, and all kinds of solvers such as `python-sat`. Do not try to use `pip` etc. to install anything, just use `uv run` etc.
 
-**Lean:** There is `elan` available, so you have also access to all the usual Lean tools. Things like `lake exe cache get` and `lake build` should work fine, but please make sure you do these kinds of compilations in `/scratch` (see below). If you run out of memory, consider using `LAKE_JOBS=1`.
+**Lean:** There is `elan` available, so you also have access to the usual Lean tools. Things like `lake exe cache get` and `lake build` should work fine, but please make sure you do these kinds of compilations in `/scratch` (see below). If you run out of memory, consider using `LAKE_JOBS=1`.
 
 ### Lean-specific advice
 
-If the host operating system is macOS, and if you try to do `lake build` (especially for a large project that uses mathlib) directly in `/workspace`, most likely you will most likely get errors that claim that some `.olean` files do not exist, even though they clearly are there in the filesystem. This is a bug in Docker Desktop for macOS: high load in bind-mounted filesystems leads to such errors. So let us try to avoid doing things like `lake build` in `/workspace`.
+If the host operating system is macOS, and if you try to do `lake build` (especially for a large project that uses mathlib) directly in `/workspace`, you may get errors claiming that some `.olean` files do not exist, even though they clearly are there in the filesystem. This is a bug in Docker Desktop for macOS: high load in bind-mounted filesystems can lead to such errors. So let us try to avoid doing things like `lake build` in `/workspace`.
 
 Please try to do development so that:
 
