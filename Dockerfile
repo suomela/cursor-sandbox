@@ -12,8 +12,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m cursor
+RUN mkdir -p /scratch \
+ && chown -R cursor:cursor /scratch \
+ && chmod 700 /scratch
+VOLUME ["/scratch"]
+
 USER cursor
 ENV HOME=/home/cursor \
     PATH=/home/cursor/.local/bin:/home/cursor/.cargo/bin:/home/cursor/.elan/bin:$PATH
-
 WORKDIR /workspace
