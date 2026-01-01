@@ -40,3 +40,8 @@ Utilities
 You can delete all persistent information with `cursor-sandbox-clear` and re-create it with `cursor-sandbox-setup`.
 
 You can get shell access to your sandbox with `cursor-sandbox-helper`.
+
+Hints
+-----
+
+You can use `AGENTS-template.md` as a starting point for your `AGENTS.md`.
