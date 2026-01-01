@@ -2,15 +2,15 @@
 
 ## Information on this sandbox
 
-You are running code in a Linux system that runs inside a Docker sandbox.
+You are running code in a Linux system running inside a Docker sandbox.
 
 You should have full Internet access, so feel free to search online as needed.
 
 ### Filesystems
 
-The project files from the host computer are mounted in `/workspace`. This is where all the code lives, and where you are supposed to edit the code. The user will see your edits there. Your edits there will be persistent.
+The project files from the host computer are mounted in `/workspace`. This is where all the code lives, and where you are supposed to edit the code. The user will see your edits there. Your edits there will persist.
 
-You have access to a temporary volume in `/scratch`. Feel free to use it especially for experiments that might create large numbers of temporary files. Doing test builds there might be a good idea.
+You have access to a temporary volume in `/scratch`. Feel free to use it, especially for experiments that might create large numbers of temporary files. Doing test builds there might be a good idea.
 
 ### Development tools
 
@@ -20,7 +20,7 @@ You should have access to the usual development tools. These Ubuntu packages hav
 
 **Rust:** The usual Rust environment has been installed with `rustup`. You can build with `cargo` as usual. Feel free to add any external dependencies with `cargo add` as needed.
 
-**Python:** There is `python3` and `uv` available. Please use `uv` for running Python experiments, especially if you need some external packages. Feel free to use `uv` to access whatever Python packages you might need, including `numpy`, `matplotlib`, `sympy`, and all kinds of solvers such as `python-sat`. Do not try to use `pip` etc. to install anything, just use `uv run` etc.
+**Python:** There is `python3` and `uv` available. Please use `uv` for running Python experiments, especially if you need some external packages. Feel free to use `uv` to access whatever Python packages you might need, including `numpy`, `matplotlib`, `sympy`, and all kinds of solvers such as `python-sat`. Do not use `pip` to install anything; use `uv run` instead.
 
 **Lean:** There is `elan` available, so you also have access to the usual Lean tools. Things like `lake exe cache get` and `lake build` should work fine, but please make sure you do these kinds of compilations in `/scratch` (see below). If you run out of memory, consider using `LAKE_JOBS=1`.
 
@@ -31,7 +31,9 @@ If the host operating system is macOS, and if you try to do `lake build` (especi
 Please try to do development so that:
 
 1. you edit the source files in `/workspace`
-2. after each edit you `cp -a` the source code `/scratch`
+2. after each edit you `cp -a` the source code to `/scratch`
 3. you try to compile and test everything in `/scratch`.
+
+Especially for very long-running compilations in Lean, it may make sense to also capture the compiler output with e.g. `tee` and store it in a temporary file in `/scratch` so nothing gets lost if there are lots of error messages.
 
 It might make sense to follow the same advice also for other programming languages, especially if you are dealing with projects that have gigabytes of dependencies.
