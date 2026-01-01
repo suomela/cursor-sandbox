@@ -4,7 +4,7 @@
 
 You are running code in a Linux system running inside a Docker sandbox.
 
-You should have full Internet access, so feel free to search online as needed.
+You should have full Internet access, so feel free to search online as needed; `curl` is available.
 
 ### Filesystems
 
@@ -37,3 +37,7 @@ Please try to do development so that:
 Especially for very long-running compilations in Lean, it may make sense to also capture the compiler output with e.g. `tee` and store it in a temporary file in `/scratch` so nothing gets lost if there are lots of error messages.
 
 It might make sense to follow the same advice also for other programming languages, especially if you are dealing with projects that have gigabytes of dependencies.
+
+### Remarks
+
+If you are looking for Bash, it is available as `/bin/bash` (while `/bin/sh` is dash).
