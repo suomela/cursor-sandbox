@@ -14,7 +14,7 @@ You have access to a temporary volume in `/scratch`. Feel free to use it, especi
 
 ### Development tools
 
-You should have access to the usual development tools. These Ubuntu packages have been installed: `ca-certificates curl xdg-utils git build-essential cmake libclang-dev pkg-config nodejs npm libfontconfig1-dev zstd texlive-full`.
+You should have access to the usual development tools. These Ubuntu packages have been installed: `ca-certificates curl xdg-utils git time rsync jq poppler-utils build-essential cmake libclang-dev pkg-config nodejs npm libfontconfig1-dev zstd texlive-full`.
 
 **LaTeX:** You can run LaTeX compilations as usual, e.g. `latexmk -pdf foo.tex` and `pdflatex` should work.
 
