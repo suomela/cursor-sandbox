@@ -28,7 +28,14 @@ The idea is that you can simply run:
 - `claude-sandbox` instead of `claude`
 - `codex-sandbox` instead of `codex`
 
+There is also:
+
+- `codex-sandbox-full-access` that is a shorthand for `codex --sandbox=danger-full-access --ask-for-approval=on-request`
+
 The current working directory of the host computer will be mounted as `/workspace` with read/write access, and the AI agents will be executed within that workspace.
+
+Login
+-----
 
 Your Cursor and Claude login information will be stored in the persistent Docker volume. There is nothing special to do; the first time you run `cursor-sandbox`, it will ask you to log in to Cursor as usual, and the same applies to `claude-sandbox`.
 

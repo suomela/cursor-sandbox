@@ -1,0 +1,10 @@
+#!/bin/bash
+
+docker run --rm -it \
+    --mount "type=volume,source=cursor-sandbox-home,target=/home/cursor" \
+    --mount "type=bind,source=.,target=/workspace" \
+    -w /workspace \
+    "cursor-agent-sandbox" \
+    codex --sandbox=danger-full-access --ask-for-approval=on-request "$@"
+
+printf '\033]0;\007'
