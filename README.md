@@ -10,14 +10,16 @@ Use at your own risk.
 One-time setup
 --------------
 
+Install [Docker](https://www.docker.com), and then run:
+
 ```bash
 ./cursor-sandbox-build-image
 ./cursor-sandbox-setup
 ```
 
-The first command creates an appropriate Docker image with basic development tools and TeX Live.
+The first command creates an appropriate Docker image with basic development tools and TeX Live. The second command sets up a persistent volume that will be visible as `/home/cursor` inside the Docker container and installs [uv](https://docs.astral.sh/uv/), Rust, [elan](https://github.com/leanprover/elan), Cursor CLI, Claude Code, and Codex there.
 
-The second command sets up a persistent volume that will be visible as `/home/cursor` inside the Docker container and installs [uv](https://docs.astral.sh/uv/), Rust, [elan](https://github.com/leanprover/elan), Cursor CLI, Claude Code, and Codex there.
+Finally, arrange things so that the relevant scripts (see below) are in your shell's search path (e.g., symlink them in `~/bin` or another similar place that is already in your PATH).
 
 Usage
 -----
@@ -32,7 +34,7 @@ There is also:
 
 - `codex-sandbox-full-access`, a shorthand for `codex --sandbox=danger-full-access --ask-for-approval=on-request`
 
-The current working directory of the host computer will be mounted as `/workspace` with read-write access, and the AI agents will be executed within that workspace. There is also a temporary volume in `/scratch` (every session has its own temporary volume).
+The **current working directory** of the host computer will be mounted as `/workspace` with read-write access, and the AI agents will be executed within that workspace. There is also a temporary volume in `/scratch` (every session has its own temporary volume).
 
 Login
 -----
