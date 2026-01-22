@@ -15,9 +15,9 @@ One-time setup
 ./cursor-sandbox-setup
 ```
 
-The first command creates an appropriate Docker image, with basic development tools and TeX Live.
+The first command creates an appropriate Docker image with basic development tools and TeX Live.
 
-The second command sets up a persistent volume that will be visible as `/home/cursor` inside the Docker container, and installs [uv](https://docs.astral.sh/uv/), Rust, [elan](https://github.com/leanprover/elan), Cursor CLI, and Claude Code there.
+The second command sets up a persistent volume that will be visible as `/home/cursor` inside the Docker container and installs [uv](https://docs.astral.sh/uv/), Rust, [elan](https://github.com/leanprover/elan), Cursor CLI, and Claude Code there.
 
 Usage
 -----
@@ -30,9 +30,9 @@ The idea is that you can simply run:
 
 There is also:
 
-- `codex-sandbox-full-access` that is a shorthand for `codex --sandbox=danger-full-access --ask-for-approval=on-request`
+- `codex-sandbox-full-access`, a shorthand for `codex --sandbox=danger-full-access --ask-for-approval=on-request`
 
-The current working directory of the host computer will be mounted as `/workspace` with read/write access, and the AI agents will be executed within that workspace.
+The current working directory of the host computer will be mounted as `/workspace` with read-write access, and the AI agents will be executed within that workspace.
 
 Login
 -----
