@@ -50,6 +50,8 @@ You can delete all persistent information with `cursor-sandbox-clear` and recrea
 
 You can get shell access to your sandbox with `cursor-sandbox-helper`.
 
+You can update the tools installed in the persistent volume with `cursor-sandbox-update` (updates `uv`, Rust, and Codex).
+
 Hints
 -----
 

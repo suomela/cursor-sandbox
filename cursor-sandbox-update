@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -euo pipefail
+
+docker run --rm -it \
+    --mount "type=volume,source=cursor-sandbox-home,target=/home/cursor" \
+    "cursor-agent-sandbox" \
+    bash -lc '
+        set -e
+
+        uv self update
+        rustup update
+        npm install -g --prefix "$HOME/.local" @openai/codex
+    '
