@@ -5,6 +5,6 @@ docker run --rm -it \
     --mount "type=bind,source=.,target=/workspace" \
     -w /workspace \
     "cursor-agent-sandbox" \
-    codex "$@"
+    bash -lc "npx @openai/codex $@"
 
 printf '\033]0;\007'

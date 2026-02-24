@@ -5,6 +5,6 @@ docker run --rm -it \
     --mount "type=bind,source=.,target=/workspace" \
     -w /workspace \
     "cursor-agent-sandbox" \
-    bash -l
+    bash -lc "npx @google/gemini-cli"
 
 printf '\033]0;\007'

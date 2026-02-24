@@ -16,5 +16,5 @@ docker run --rm -it \
         curl -LsSf https://elan.lean-lang.org/elan-init.sh | sh -s -- -y --no-modify-path --default-toolchain lean4
         curl https://cursor.com/install -fsS | bash
         curl -fsSL https://claude.ai/install.sh | bash
-        npm install -g --prefix "$HOME/.local" @openai/codex
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
     '

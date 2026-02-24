@@ -1,7 +1,7 @@
 Cursor CLI + Claude Code + Codex Sandbox
 ========================================
 
-A Docker sandbox for [Cursor CLI](https://cursor.com/cli), [Claude Code](https://www.claude.com/product/claude-code), and [Codex](https://openai.com/codex/).
+A Docker sandbox for [Cursor CLI](https://cursor.com/cli), [Claude Code](https://www.claude.com/product/claude-code), [Codex](https://openai.com/codex/), and [Gemini CLI](https://github.com/google-gemini/gemini-cli).
 
 This should work (at least) on macOS, assuming you already have Docker installed.
 
@@ -50,7 +50,7 @@ You can delete all persistent information with `cursor-sandbox-clear` and recrea
 
 You can get shell access to your sandbox with `cursor-sandbox-helper`.
 
-You can update the tools installed in the persistent volume with `cursor-sandbox-update` (updates `uv`, Rust, and Codex).
+You can update the tools installed in the persistent volume with `cursor-sandbox-update`.
 
 Hints
 -----

@@ -10,5 +10,5 @@ docker run --rm -it \
 
         uv self update
         rustup update
-        npm install -g --prefix "$HOME/.local" @openai/codex
+        nvm install 25
     '
