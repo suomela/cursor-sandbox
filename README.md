@@ -1,5 +1,5 @@
-Cursor CLI + Claude Code + Codex Sandbox
-========================================
+Cursor CLI + Claude Code + Codex + Gemini Sandbox
+=================================================
 
 A Docker sandbox for [Cursor CLI](https://cursor.com/cli), [Claude Code](https://www.claude.com/product/claude-code), [Codex](https://openai.com/codex/), and [Gemini CLI](https://github.com/google-gemini/gemini-cli).
 
@@ -17,7 +17,7 @@ Install [Docker](https://www.docker.com), and then run:
 ./cursor-sandbox-setup
 ```
 
-The first command creates an appropriate Docker image with basic development tools and TeX Live. The second command sets up a persistent volume that will be visible as `/home/cursor` inside the Docker container and installs [uv](https://docs.astral.sh/uv/), Rust, [elan](https://github.com/leanprover/elan), Cursor CLI, Claude Code, and Codex there.
+The first command creates an appropriate Docker image with basic development tools and TeX Live. The second command recreates a persistent volume that will be visible as `/home/cursor` inside the Docker container and installs [uv](https://docs.astral.sh/uv/), `rustup`, [elan](https://github.com/leanprover/elan), Cursor CLI, Claude Code, `nvm`, and Node.js 25 there. The `codex-sandbox` and `gemini-sandbox` wrappers then run the corresponding CLIs via `npx` inside the container.
 
 Finally, arrange things so that the relevant scripts (see below) are in your shell's search path (e.g., symlink them in `~/bin` or another similar place that is already in your PATH).
 
@@ -29,6 +29,7 @@ The idea is that you can simply run:
 - `cursor-sandbox` instead of `cursor-agent`
 - `claude-sandbox` instead of `claude`
 - `codex-sandbox` instead of `codex`
+- `gemini-sandbox` instead of `gemini`
 
 There is also:
 
@@ -50,7 +51,7 @@ You can delete all persistent information with `cursor-sandbox-clear` and recrea
 
 You can get shell access to your sandbox with `cursor-sandbox-helper`.
 
-You can update the tools installed in the persistent volume with `cursor-sandbox-update`.
+You can refresh `uv`, `rustup`, and the Node.js 25 install in the persistent volume with `cursor-sandbox-update`.
 
 Hints
 -----
