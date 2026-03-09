@@ -5,7 +5,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates curl xdg-utils git time rsync jq poppler-utils \
     build-essential cmake libclang-dev pkg-config \
-    nodejs npm \
     libfontconfig1-dev \
     zstd \
     texlive-full \
@@ -19,5 +18,5 @@ VOLUME ["/scratch"]
 
 USER cursor
 ENV HOME=/home/cursor \
-    PATH=/home/cursor/.local/bin:/home/cursor/.cargo/bin:/home/cursor/.elan/bin:$PATH
+    PATH=/home/cursor/.local/bin:$PATH
 WORKDIR /workspace

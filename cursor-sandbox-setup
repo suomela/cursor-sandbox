@@ -13,8 +13,17 @@ docker run --rm -it \
 
         curl -LsSf https://astral.sh/uv/install.sh | sh
         curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-        curl -LsSf https://elan.lean-lang.org/elan-init.sh | sh -s -- -y --no-modify-path --default-toolchain lean4
+        curl -LsSf https://elan.lean-lang.org/elan-init.sh | sh -s -- -y --default-toolchain lean4
         curl https://cursor.com/install -fsS | bash
         curl -fsSL https://claude.ai/install.sh | bash
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+    '
+
+docker run --rm -it \
+    --mount "type=volume,source=cursor-sandbox-home,target=/home/cursor" \
+    "cursor-agent-sandbox" \
+    bash -lc '
+        set -e
+
+        nvm install 25
     '
