@@ -1,0 +1,15 @@
+#!/bin/bash
+
+docker run --rm -it \
+    --mount "type=volume,source=cursor-sandbox-home,target=/home/cursor" \
+    --mount "type=bind,source=.,target=/workspace" \
+    -w /workspace \
+    "cursor-agent-sandbox" \
+    bash -lc 'npx @openai/codex "$@"' bash \
+        -c model_provider=lmstudio_docker \
+        -c model_providers.lmstudio_docker.name='LM Studio' \
+        -c model_providers.lmstudio_docker.base_url='http://host.docker.internal:1234/v1' \
+        -m google/gemma-4-31b \    
+        "$@"
+
+printf '\033]0;\007'
