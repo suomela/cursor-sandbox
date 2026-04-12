@@ -9,7 +9,7 @@ docker run --rm -it \
         -c model_provider=lmstudio_docker \
         -c model_providers.lmstudio_docker.name='LM Studio' \
         -c model_providers.lmstudio_docker.base_url='http://host.docker.internal:1234/v1' \
-        -m google/gemma-4-31b \    
+        -m google/gemma-4-31b \
         "$@"
 
 printf '\033]0;\007'
