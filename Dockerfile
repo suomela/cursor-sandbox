@@ -6,8 +6,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates curl xdg-utils git time rsync jq poppler-utils \
     build-essential cmake libclang-dev pkg-config \
     libfontconfig1-dev \
-    zstd \
+    less file \
+    zstd p7zip-full p7zip-rar unrar xz-utils bzip2 gzip tar \
     texlive-full \
+    epubcheck \
  && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m cursor
