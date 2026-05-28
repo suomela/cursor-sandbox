@@ -33,6 +33,7 @@ The idea is that you can simply run:
 
 There is also:
 
+- `claude-sandbox-full-access`, a shorthand for `claude --permission-mode bypassPermissions`
 - `codex-sandbox-full-access`, a shorthand for `codex --sandbox=danger-full-access --ask-for-approval=on-request`
 
 The **current working directory** of the host computer will be mounted as `/workspace` with read-write access, and the AI agents will be executed within that workspace. There is also a temporary volume in `/scratch` (every session has its own temporary volume).
