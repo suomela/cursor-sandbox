@@ -3,13 +3,49 @@
 docker run --rm -it \
     --mount "type=volume,source=cursor-sandbox-home,target=/home/cursor" \
     --mount "type=bind,source=.,target=/workspace" \
+    --add-host "host.docker.internal:host-gateway" \
+    --env "HOME=/home/cursor" \
+    --env "CODEX_HOME=/home/cursor/.codex-lmstudio-local" \
+    --env "npm_config_offline=true" \
+    --env "HTTP_PROXY=" \
+    --env "HTTPS_PROXY=" \
+    --env "ALL_PROXY=" \
+    --env "NO_PROXY=localhost,127.0.0.1,host.docker.internal" \
     -w /workspace \
     "cursor-agent-sandbox" \
-    bash -lc 'npx @openai/codex "$@"' bash \
-        -c model_provider=lmstudio_docker \
-        -c model_providers.lmstudio_docker.name='LM Studio' \
-        -c model_providers.lmstudio_docker.base_url='http://host.docker.internal:1234/v1' \
-        -m google/gemma-4-31b \
+    bash -lc '
+        set -e
+        mkdir -p "$CODEX_HOME"
+        exec npx --offline @openai/codex "$@"
+    ' bash \
+        -c 'model_provider="lmstudio_docker"' \
+        -c 'model_providers.lmstudio_docker.name="LM Studio"' \
+        -c 'model_providers.lmstudio_docker.base_url="http://host.docker.internal:1234/v1"' \
+        -c 'model_providers.lmstudio_docker.wire_api="responses"' \
+        -c 'model_providers.lmstudio_docker.requires_openai_auth=false' \
+        -c 'model_context_window=32768' \
+        -c 'model_auto_compact_token_limit=28672' \
+        -c 'model_supports_reasoning_summaries=false' \
+        -c 'model_reasoning_summary="none"' \
+        -c 'web_search="disabled"' \
+        -c 'tools.web_search=false' \
+        -c 'tools.view_image=false' \
+        -c 'features.apps=false' \
+        -c 'features.remote_plugin=false' \
+        -c 'features.multi_agent=false' \
+        -c 'features.hooks=false' \
+        -c 'features.network_proxy=false' \
+        -c 'features.skill_mcp_dependency_install=false' \
+        -c 'sandbox_mode="workspace-write"' \
+        -c 'sandbox_workspace_write.network_access=false' \
+        -c 'projects."/workspace".trust_level="untrusted"' \
+        -c 'check_for_update_on_startup=false' \
+        -c 'analytics.enabled=false' \
+        -c 'feedback.enabled=false' \
+        -c 'otel.exporter="none"' \
+        -c 'otel.metrics_exporter="none"' \
+        -c 'otel.trace_exporter="none"' \
+        -m 'google/gemma-4-31b' \
         "$@"
 
 printf '\033]0;\007'
