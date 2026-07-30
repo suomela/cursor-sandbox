@@ -12,7 +12,7 @@ docker run --rm -it \
     "cursor-agent-sandbox" \
     bash -lc 'npx @openai/codex "$@"' bash \
         --sandbox=danger-full-access \
-        --ask-for-approval=on-request \
+        --ask-for-approval=never \
         "$@"
 
 printf '\033]0;\007'
