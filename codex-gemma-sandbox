@@ -1,6 +1,11 @@
 #!/bin/bash
 
+project=$(printf '%s' "${PWD##*/}" |
+    LC_ALL=C tr -c 'A-Za-z0-9_.-' '-')
+container_name="codex-gemma-${project:-workspace}-$$"
+
 docker run --rm -it \
+    --name "$container_name" \
     --mount "type=volume,source=cursor-sandbox-home,target=/home/cursor" \
     --mount "type=bind,source=.,target=/workspace" \
     --add-host "host.docker.internal:host-gateway" \
