@@ -1,0 +1,154 @@
+#!/bin/bash
+
+project=$(printf '%s' "${PWD##*/}" |
+    LC_ALL=C tr -c 'A-Za-z0-9_.-' '-')
+container_name="codex-qwen-${project:-workspace}-$$"
+
+docker run --rm -it \
+    --name "$container_name" \
+    --mount "type=volume,source=cursor-sandbox-home,target=/home/cursor" \
+    --mount "type=bind,source=.,target=/workspace" \
+    --add-host "host.docker.internal:host-gateway" \
+    --env "HOME=/home/cursor" \
+    --env "CODEX_HOME=/home/cursor/.codex-lmstudio-local" \
+    --env "npm_config_offline=true" \
+    --env "HTTP_PROXY=" \
+    --env "HTTPS_PROXY=" \
+    --env "ALL_PROXY=" \
+    --env "NO_PROXY=localhost,127.0.0.1,host.docker.internal" \
+    -w /workspace \
+    "cursor-agent-sandbox" \
+    bash -lc '
+        set -euo pipefail
+
+        lmstudio_api="http://host.docker.internal:1234"
+        qwen_model="qwen/qwen3.6-27b"
+        qwen_context=98304
+        qwen_compact=86016
+
+        lmstudio_models=$(curl -fsS --max-time 5 \
+            "$lmstudio_api/api/v1/models") || {
+            printf "Cannot reach the LM Studio server at %s.\n" \
+                "$lmstudio_api" >&2
+            exit 1
+        }
+        loaded_context=$(printf "%s" "$lmstudio_models" |
+            jq -r --arg model "$qwen_model" \
+                "([.models[] | select(.key == \$model) |
+                    .loaded_instances[]? | .config.context_length] |
+                    max) // empty")
+        if [ -z "$loaded_context" ]; then
+            printf "LM Studio model %s is not loaded.\n" "$qwen_model" >&2
+            printf "Load it on the host with:\n  lms load %s --context-length %s\n" \
+                "$qwen_model" "$qwen_context" >&2
+            exit 1
+        fi
+        if [ "$loaded_context" -lt "$qwen_context" ]; then
+            printf "LM Studio model %s has a %s-token context; %s is required.\n" \
+                "$qwen_model" "$loaded_context" "$qwen_context" >&2
+            printf "Reload it on the host with:\n" >&2
+            printf "  lms unload %s\n" "$qwen_model" >&2
+            printf "  lms load %s --context-length %s\n" \
+                "$qwen_model" "$qwen_context" >&2
+            exit 1
+        fi
+
+        mkdir -p "$CODEX_HOME"
+        qwen_catalog="$CODEX_HOME/qwen3.6-27b-model-catalog.json"
+        qwen_catalog_tmp="$qwen_catalog.tmp.$$"
+        npx --offline @openai/codex \
+            -c "web_search=\"disabled\"" \
+            -c "features.apps=false" \
+            -c "features.remote_plugin=false" \
+            -c "features.hooks=false" \
+            -c "features.multi_agent=false" \
+            -c "features.skill_mcp_dependency_install=false" \
+            -c "check_for_update_on_startup=false" \
+            -c "analytics.enabled=false" \
+            -c "feedback.enabled=false" \
+            -c "otel.exporter=\"none\"" \
+            -c "otel.metrics_exporter=\"none\"" \
+            -c "otel.trace_exporter=\"none\"" \
+            debug models --bundled |
+            jq --arg model "$qwen_model" \
+                --argjson context "$qwen_context" \
+                --argjson compact "$qwen_compact" \
+                -f /dev/fd/3 >"$qwen_catalog_tmp" 3<<JQ
+{
+  "models": [
+    .models[0]
+    | .slug = \$model
+    | .display_name = "Qwen3.6 27B"
+    | .description = "Qwen3.6 27B running locally in LM Studio"
+    | .default_reasoning_level = null
+    | .supported_reasoning_levels = []
+    | .additional_speed_tiers = []
+    | .service_tiers = []
+    | .availability_nux = null
+    | .upgrade = null
+    | .base_instructions = (
+        "You are a coding agent running locally through Codex CLI with Qwen3.6-27B. You and the user share one workspace, and your job is to collaborate until the goal is handled.\\n"
+        + (.base_instructions | split("\\n") | .[1:] | join("\\n"))
+      )
+    | .model_messages = null
+    | .shell_type = "shell_command"
+    | .supports_reasoning_summary_parameter = false
+    | .default_reasoning_summary = "none"
+    | .support_verbosity = false
+    | .default_verbosity = null
+    | .apply_patch_tool_type = null
+    | .web_search_tool_type = "text"
+    | .truncation_policy = {"mode": "tokens", "limit": 10000}
+    | .supports_parallel_tool_calls = false
+    | .supports_image_detail_original = false
+    | .context_window = \$context
+    | .max_context_window = 262144
+    | .auto_compact_token_limit = \$compact
+    | .effective_context_window_percent = 95
+    | .experimental_supported_tools = []
+    | .input_modalities = ["text", "image"]
+    | .supports_search_tool = false
+    | .use_responses_lite = false
+    | .tool_mode = "direct"
+    | .multi_agent_version = null
+    | del(.comp_hash)
+  ]
+}
+JQ
+        mv "$qwen_catalog_tmp" "$qwen_catalog"
+
+        exec npx --offline @openai/codex \
+            -c "model_catalog_json=\"$qwen_catalog\"" "$@"
+    ' bash \
+        --strict-config \
+        -c 'model_provider="lmstudio_docker"' \
+        -c 'model_providers.lmstudio_docker.name="LM Studio"' \
+        -c 'model_providers.lmstudio_docker.base_url="http://host.docker.internal:1234/v1"' \
+        -c 'model_providers.lmstudio_docker.wire_api="responses"' \
+        -c 'model_providers.lmstudio_docker.requires_openai_auth=false' \
+        -c 'model_context_window=98304' \
+        -c 'model_auto_compact_token_limit=86016' \
+        -c 'model_reasoning_summary="none"' \
+        -c 'web_search="disabled"' \
+        -c 'tools.web_search=false' \
+        -c 'features.apps=false' \
+        -c 'features.remote_plugin=false' \
+        -c 'features.multi_agent=false' \
+        -c 'features.hooks=false' \
+        -c 'features.network_proxy=false' \
+        -c 'features.skill_mcp_dependency_install=false' \
+        -c 'sandbox_mode="workspace-write"' \
+        -c 'sandbox_workspace_write.network_access=false' \
+        -c 'projects."/workspace".trust_level="untrusted"' \
+        -c 'check_for_update_on_startup=false' \
+        -c 'analytics.enabled=false' \
+        -c 'feedback.enabled=false' \
+        -c 'otel.exporter="none"' \
+        -c 'otel.metrics_exporter="none"' \
+        -c 'otel.trace_exporter="none"' \
+        -m 'qwen/qwen3.6-27b' \
+        "$@"
+
+docker_status=$?
+printf '\033]0;\007'
+exit "$docker_status"
