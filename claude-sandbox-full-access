@@ -1,5 +1,16 @@
 #!/bin/bash
 
+if [[ -n "${HOME:-}" ]] &&
+    [[ "$(pwd -P)" == "$(cd -- "$HOME" 2>/dev/null && pwd -P)" ]]; then
+    printf 'Warning: the current directory is your home directory (%s).\n' \
+        "$HOME" >&2
+    printf 'Do you really want to mount it as /workspace? (y/n) ' >&2
+    if ! IFS= read -r confirmation || [[ "$confirmation" != [Yy] ]]; then
+        printf 'Aborted.\n' >&2
+        exit 1
+    fi
+fi
+
 project=$(printf '%s' "${PWD##*/}" |
     LC_ALL=C tr -c 'A-Za-z0-9_.-' '-')
 container_name="claude-${project:-workspace}-$$"
