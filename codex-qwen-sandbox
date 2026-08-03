@@ -117,7 +117,9 @@ docker run --rm -it \
     | .auto_compact_token_limit = \$compact
     | .effective_context_window_percent = 95
     | .experimental_supported_tools = []
-    | .input_modalities = ["text", "image"]
+    # Treat the model as text-only until LM Studio accepts Codex view_image outputs:
+    # https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/2200
+    | .input_modalities = ["text"]
     | .supports_search_tool = false
     | .use_responses_lite = false
     | .tool_mode = "direct"
