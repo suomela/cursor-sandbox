@@ -36,6 +36,7 @@ docker run --rm -it \
         qwen_model="qwen/qwen3.6-27b"
         qwen_context=98304
         qwen_compact=86016
+        qwen_ttl=3600
 
         lmstudio_models=$(curl -fsS --max-time 5 \
             "$lmstudio_api/api/v1/models") || {
@@ -50,8 +51,9 @@ docker run --rm -it \
                     max) // empty")
         if [ -z "$loaded_context" ]; then
             printf "LM Studio model %s is not loaded.\n" "$qwen_model" >&2
-            printf "Load it on the host with:\n  lms load %s --context-length %s\n" \
-                "$qwen_model" "$qwen_context" >&2
+            printf "Load it on the host with:\n" >&2
+            printf "  lms load %s --context-length %s --ttl %s\n" \
+                "$qwen_model" "$qwen_context" "$qwen_ttl" >&2
             exit 1
         fi
         if [ "$loaded_context" -lt "$qwen_context" ]; then
@@ -59,8 +61,8 @@ docker run --rm -it \
                 "$qwen_model" "$loaded_context" "$qwen_context" >&2
             printf "Reload it on the host with:\n" >&2
             printf "  lms unload %s\n" "$qwen_model" >&2
-            printf "  lms load %s --context-length %s\n" \
-                "$qwen_model" "$qwen_context" >&2
+            printf "  lms load %s --context-length %s --ttl %s\n" \
+                "$qwen_model" "$qwen_context" "$qwen_ttl" >&2
             exit 1
         fi
 
