@@ -1,0 +1,130 @@
+#!/bin/bash
+
+if [[ -n "${HOME:-}" ]] &&
+    [[ "$(pwd -P)" == "$(cd -- "$HOME" 2>/dev/null && pwd -P)" ]]; then
+    printf 'Warning: the current directory is your home directory (%s).\n' \
+        "$HOME" >&2
+    printf 'Do you really want to mount it as /workspace? (y/n) ' >&2
+    if ! IFS= read -r confirmation || [[ "$confirmation" != [Yy] ]]; then
+        printf 'Aborted.\n' >&2
+        exit 1
+    fi
+fi
+
+project=$(printf '%s' "${PWD##*/}" |
+    LC_ALL=C tr -c 'A-Za-z0-9_.-' '-')
+container_name="pi-qwen-${project:-workspace}-$$"
+
+docker run --rm -it \
+    --name "$container_name" \
+    --mount "type=volume,source=cursor-sandbox-home,target=/home/cursor" \
+    --mount "type=bind,source=.,target=/workspace" \
+    --add-host "host.docker.internal:host-gateway" \
+    --env "PI_CODING_AGENT_DIR=/home/cursor/.pi-qwen-lmstudio-local" \
+    -w /workspace \
+    "cursor-agent-sandbox" \
+    bash -lc '
+        set -euo pipefail
+
+        lmstudio_api="http://host.docker.internal:1234"
+        qwen_model="qwen/qwen3.8-27b"
+        qwen_context=80896
+        qwen_ttl=3600
+
+        lmstudio_models=$(curl -fsS --max-time 5 \
+            "$lmstudio_api/api/v1/models") || {
+            printf "Cannot reach the LM Studio server at %s.\n" \
+                "$lmstudio_api" >&2
+            exit 1
+        }
+        loaded_context=$(printf "%s" "$lmstudio_models" |
+            jq -r --arg model "$qwen_model" \
+                "([.models[] | select(.key == \$model) |
+                    .loaded_instances[]? | .config.context_length] |
+                    max) // empty")
+        if [ -z "$loaded_context" ]; then
+            printf "LM Studio model %s is not loaded.\n" "$qwen_model" >&2
+            printf "Load it on the host with:\n" >&2
+            printf "  lms load %s --context-length %s --ttl %s\n" \
+                "$qwen_model" "$qwen_context" "$qwen_ttl" >&2
+            exit 1
+        fi
+        if [ "$loaded_context" -lt "$qwen_context" ]; then
+            printf "LM Studio model %s has a %s-token context; %s is required.\n" \
+                "$qwen_model" "$loaded_context" "$qwen_context" >&2
+            printf "Reload it on the host with:\n" >&2
+            printf "  lms unload %s\n" "$qwen_model" >&2
+            printf "  lms load %s --context-length %s --ttl %s\n" \
+                "$qwen_model" "$qwen_context" "$qwen_ttl" >&2
+            exit 1
+        fi
+
+        qwen_vision=$(printf "%s" "$lmstudio_models" |
+            jq -r --arg model "$qwen_model" \
+                "([.models[] | select(.key == \$model) |
+                    .capabilities.vision] | first) // false")
+        qwen_input="[\"text\"]"
+        if [ "$qwen_vision" = true ]; then
+            qwen_input="[\"text\", \"image\"]"
+        fi
+
+        mkdir -p "$PI_CODING_AGENT_DIR"
+        pi_models="$PI_CODING_AGENT_DIR/models.json"
+        pi_models_tmp="$pi_models.tmp.$$"
+        jq -n \
+            --arg base_url "$lmstudio_api/v1" \
+            --arg model "$qwen_model" \
+            --argjson context "$loaded_context" \
+            --argjson input "$qwen_input" \
+            -f /dev/fd/3 >"$pi_models_tmp" 3<<\JQ
+{
+  "providers": {
+    "lmstudio": {
+      "baseUrl": $base_url,
+      "api": "openai-completions",
+      "apiKey": "lm-studio",
+      "models": [
+        {
+          "id": $model,
+          "name": "Qwen3.8 27B (LM Studio)",
+          "reasoning": true,
+          "input": $input,
+          "contextWindow": $context,
+          "thinkingLevelMap": {
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": null,
+            "xhigh": "xhigh",
+            "max": null
+          },
+          "compat": {
+            "supportsStore": false,
+            "supportsDeveloperRole": false,
+            "maxTokensField": "max_tokens",
+            "supportsStrictMode": false,
+            "thinkingFormat": "chat-template",
+            "chatTemplateKwargs": {
+              "enable_thinking": {"$var": "thinking.enabled"},
+              "preserve_thinking": true,
+              "reasoning_effort": {
+                "$var": "thinking.effort",
+                "omitWhenOff": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+JQ
+        mv "$pi_models_tmp" "$pi_models"
+
+        exec npx @earendil-works/pi-coding-agent \
+            --provider lmstudio --model "$qwen_model" "$@"
+    ' bash "$@"
+
+docker_status=$?
+printf '\033]0;\007'
+exit "$docker_status"

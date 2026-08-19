@@ -1,7 +1,7 @@
-Cursor CLI + Claude Code + Codex + Gemini Sandbox
-=================================================
+Cursor CLI + Claude Code + Codex + Gemini + Pi Sandbox
+======================================================
 
-A Docker sandbox for [Cursor CLI](https://cursor.com/cli), [Claude Code](https://www.claude.com/product/claude-code), [Codex](https://openai.com/codex/), and [Gemini CLI](https://github.com/google-gemini/gemini-cli).
+A Docker sandbox for [Cursor CLI](https://cursor.com/cli), [Claude Code](https://www.claude.com/product/claude-code), [Codex](https://openai.com/codex/), [Gemini CLI](https://github.com/google-gemini/gemini-cli), and [Pi](https://pi.dev/).
 
 This should work (at least) on macOS, assuming you already have Docker installed.
 
@@ -17,7 +17,7 @@ Install [Docker](https://www.docker.com), and then run:
 ./cursor-sandbox-setup
 ```
 
-The first command creates an appropriate Docker image with basic development tools and TeX Live. The second command recreates a persistent volume that will be visible as `/home/cursor` inside the Docker container and installs [uv](https://docs.astral.sh/uv/), `rustup`, [elan](https://github.com/leanprover/elan), Cursor CLI, Claude Code, `nvm`, and Node.js 25 there. The `codex-sandbox` and `gemini-sandbox` wrappers then run the corresponding CLIs via `npx` inside the container.
+The first command creates an appropriate Docker image with basic development tools and TeX Live. The second command recreates a persistent volume that will be visible as `/home/cursor` inside the Docker container and installs [uv](https://docs.astral.sh/uv/), `rustup`, [elan](https://github.com/leanprover/elan), Cursor CLI, Claude Code, `nvm`, and Node.js 25 there. The `codex-sandbox`, `gemini-sandbox`, and `pi-qwen-sandbox` wrappers then run the corresponding CLIs via `npx` inside the container.
 
 Finally, arrange things so that the relevant scripts (see below) are in your shell's search path (e.g., symlink them in `~/bin` or another similar place that is already in your PATH).
 
@@ -30,6 +30,7 @@ The idea is that you can simply run:
 - `claude-sandbox` instead of `claude`
 - `codex-sandbox` instead of `codex`
 - `gemini-sandbox` instead of `gemini`
+- `pi-qwen-sandbox` to run Pi with Qwen3.8 27B in LM Studio
 
 There is also:
 
@@ -37,6 +38,18 @@ There is also:
 - `codex-sandbox-full-access`, a shorthand for `codex --sandbox=danger-full-access --ask-for-approval=never`
 
 The **current working directory** of the host computer will be mounted as `/workspace` with read-write access, and the AI agents will be executed within that workspace. There is also a temporary volume in `/scratch` (every session has its own temporary volume).
+
+Local Qwen with Pi
+------------------
+
+`pi-qwen-sandbox` expects LM Studio's local server to be running on port 1234 with `qwen/qwen3.8-27b` loaded using a context of at least 80,896 tokens. For example:
+
+```bash
+lms load qwen/qwen3.8-27b --context-length 80896 --ttl 3600
+pi-qwen-sandbox
+```
+
+The wrapper uses the context length and vision capability reported by LM Studio. It keeps Pi's configuration and sessions in the persistent `/home/cursor/.pi-qwen-lmstudio-local` directory.
 
 Login
 -----
